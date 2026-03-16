@@ -59,6 +59,65 @@ function actualizarPrioridad(idRecibido, nuevaPrioridad) {
 } // Map crea un arrary nuevo con los datos anteriores y algo mas pero al igualarlo a tareasTotales, se actualiza el array original.
   // En este caso, se agrega el atributo prioridad a la tarea que tenga el id igual al id recibido.
 
+ // -----------------------------------------------------------------------------------------
+ // Hechos con ia  
+
+function duplicarTarea(idRecibido) {
+    const tareaOriginal = tareasTotales.find(tarea => tarea.id === idRecibido);
+
+    if (!tareaOriginal) {
+        return null;
+    }
+
+    const tareaDuplicada = {
+        ...crearTarea(
+            `${tareaOriginal.descripcion} (copia)`,
+            tareaOriginal.firmada,
+            tareaOriginal.materia
+        ),
+        ...("prioridad" in tareaOriginal ? { prioridad: tareaOriginal.prioridad } : {})
+    };
+
+    tareasTotales = [...tareasTotales, tareaDuplicada];
+    return tareaDuplicada;
+}
+
+function filtrarPorEstado() {
+    return tareasTotales.filter(tarea => tarea.firmada ? "completada" : "pendiente"
+)}
+
+function filtrarPorPrioridad(prioridad) {
+    return tareasTotales.filter(tarea =>
+        tarea.prioridad === prioridad.toLowerCase()
+    );
+}
+
+function contarPorPrioridad() {
+    return tareasTotales.reduce(
+        (acumulador, tarea) => {
+            const prioridadActual = (tarea.prioridad || "").toLowerCase();
+
+            if (prioridadActual in acumulador) {
+                acumulador[prioridadActual] += 1;
+            }
+
+            return acumulador;
+        },
+        { alta: 0, media: 0, baja: 0 }
+    );
+}
+
+function buscarTareas(termino) {
+    return tareasTotales.filter(tarea =>
+        tarea.descripcion == termino)
+}
+
+
+
+
+
+
+
   
 
 
