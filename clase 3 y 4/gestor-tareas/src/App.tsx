@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BarraBusqueda from './components/BarraBusqueda'
 import FiltrosOrden from './components/FiltrosOrden'
 import FormularioTarea from './components/FormularioTarea'
@@ -7,7 +7,14 @@ import type { Prioridad, Tarea } from './types/tarea'
 import './App.css'
 
 function App() {
-  const [tareas, setTareas] = useState<Tarea[]>([])
+  const [tareas, setTareas] = useState<Tarea[]>(() => {
+    try {
+      const stored = localStorage.getItem('tareas')
+      return stored ? (JSON.parse(stored) as Tarea[]) : []
+    } catch {
+      return []
+    }
+  })
   const [busqueda, setBusqueda] = useState('')
   const [filtroPrioridad, setFiltroPrioridad] = useState<Prioridad | 'todas'>('todas')
   const [mostrarBuscador, setMostrarBuscador] = useState(false)
@@ -15,6 +22,10 @@ function App() {
   const completarTarea = (id: number) => {
     setTareas((prev) => prev.filter((tarea) => tarea.id !== id))
   }
+
+  useEffect(() => {
+    localStorage.setItem('tareas', JSON.stringify(tareas))
+  }, [tareas])
 
   const crearTarea = (nuevaTarea: Tarea) => {
     setTareas((prev) => [...prev, nuevaTarea])
